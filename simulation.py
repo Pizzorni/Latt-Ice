@@ -1,15 +1,35 @@
 from random import randint
-from animals import Bear
-from animals import Penguin
-population = []
+from animals import *
+import argparse
+import numpy as np
 
-for i in xrange(10):
-  coin = randint(0,1)
-  if coin == 1:
-    population.append(Penguin(randint(0,20)))
-  else:
-    population.append(Bear(randint(0,20), randint(0,10)))
 
-for animal in population:
-  print animal
+def main():
+  parser = argparse.argumentParser()
+  parser.add_argument('-p', '--penguin', type=int, 
+                    help='initial penguin population size')
+  parser.add_argument('-b', '--bear', type=int, 
+                    help='initial bear population size')
+  parser.add_argument('-d', '--dimension', type=int, 
+                    help='dimension of square world')
 
+  max_peng = 20
+  max_bear = 10
+  dim = 100
+
+  if(args.penguin):
+    max_peng = args.penguin
+  if(args.bear):
+    max_bear = args.bear
+  if(args.dimension):
+    dim = args.dimension
+
+  # Custom dtype for usage with np arrays
+  #   
+  animal_dt = np.dtype([('species', np.int8), ('age', np.int8),
+        ('energy', np.int8), ('speed', np.int8)])
+
+  arr = np.empty([dim,dim] dtype=animal_dt) 
+
+def world_init(max_peng, max_bear, world_dim):
+  
