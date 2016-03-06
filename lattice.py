@@ -2,7 +2,9 @@ import argparse
 from animals import Animal as anml
 from simulation import Simulation as sim
 import numpy as np
-import copy
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
 
 world = []
 population = []
@@ -26,10 +28,10 @@ def main():
   #Default simulation parameters
   num_peng = 20
   num_bear = 10
-  dim = 20
-  gen = 100
+  dim = 100
+  gen = 1000
   if(args.peng):
-    num_peng = args.penguin
+    num_peng = args.peng
   if(args.bear):
     num_bear = args.bear
   if(args.dim):
@@ -45,12 +47,18 @@ def main():
 
   world = np.zeros([dim,dim], dtype=animal_dt) 
   world_init(num_peng, num_bear, dim)
-  count = 0
+  
+  plt.ion()
+  fig = plt.figure()
+  ax = fig.add_subplot(111)
+  ax.set_xlim(0,dim)
+  ax.set_ylim(0,dim)
+  peng_x, peng_y, bear_x, bear_y = generate_plot(population)
+  scat1 = ax.scatter(peng_x, peng_y, color = 'green')
+  scat2 = ax.scatter(bear_x, bear_y, color = 'red')
+  fig.canvas.draw()
 
-  print "Initial pop size: " + str(len(population))
   for g in range(gen):
-    print "Generation: " + str(g)
-    print "Pop size: " + str(len(population))
     np.random.shuffle(population)
     while(len(population) > 0):
       animal = population.pop()
@@ -58,15 +66,17 @@ def main():
         simulate_penguin(animal)
       else:
         simulate_bear(animal)
-    print "pop before copy: " + str(len(population))
-    print "babies before wipe: " + str(len(new_pop))
     for beasty in new_pop:
       population.append(beasty)
     new_pop = []
-    print "pop after babies: " + str(len(population))
-  print "Final pop size: " + str(len(population))
+    peng_x, peng_y, bear_x, bear_y = generate_plot(population)
+   # peng = [(x,y) for x,y in zip(peng_x, peng_y)]
+   # bear = [(x,y) for x,y in zip(bear_x, bear_y)]
+    ax.clear()
+    scat1 = ax.scatter(peng_x, peng_y, color = 'green')
+    scat2 = ax.scatter(bear_x, bear_y, color = 'red')
+    fig.canvas.draw()
 
-  
 
 def world_init(num_peng, num_bear, dim):
   global world
@@ -113,7 +123,6 @@ def simulate_penguin(penguin_coords):
       #add baby penguin to population yet to be simulated
       new_pop.append((x,y))
       world[x][y] = baby_peng
-      print "reproduced!"
   else:
     new_pop.append((x,y))
     world[x][y] = penguin
@@ -124,7 +133,36 @@ def simulate_bear(bear_coords):
   global new_pop
   x = bear_coords[0]
   y = bear_coords[1]
-  new_pop.append((x,y))
+
+  free_cells = hunt_penguins(x,y)
+  bear = world[x][y]
+  bear['age'] += 1
+  bear['energy'] -= 1
+  reproduce = bear['age']
+  bear['age'] = bear['age'] % sim.B_AGE
+  survive = bear['energy']
+
+  if(survive == 0):
+    world[x][y] = (anml.EMPTY, 0, 0, 0)
+  if(free_cells):
+    move_to = free_cells[np.random.randint(len(free_cells))]
+    world[x][y] = (anml.EMPTY, 0, 0, 0)
+    if(world[move_to]['species'] == anml.PENGUIN):
+      if(move_to in population):
+        population.remove(move_to)
+      if(new_pop in population):
+        new_pop.remove(move_to)
+      bear['energy'] += 5
+    world[move_to] = bear
+    new_pop.append(move_to)
+    if(reproduce == sim.B_AGE):
+      baby_bear = (anml.BEAR, 1, sim.B_ENERGY, sim.B_SPEED)
+      new_pop.append((x,y))
+      world[x][y] = baby_bear
+  else:
+    new_pop.append((x,y))
+    world[x][y] = bear
+
 
 def get_moves(x,y):
   dim = world.shape[0]
@@ -135,9 +173,47 @@ def get_moves(x,y):
   for n in new_loc:
     #construct list of free spaces
     if world[n][0] == anml.EMPTY and n != (x,y):
-      free_space = True
       free_loc.append(n)
   return free_loc
+
+def hunt_penguins(x,y):
+  dim = world.shape[0]
+  new_loc = [(x+i , y+j) for i,j in [(i,j) for 
+            i in range(-1,2) for j in range (-1,2)]]
+  new_loc = [(x%dim, y%dim) for x,y in new_loc]
+  free_loc = []
+  peng_loc = []
+  for n in new_loc:
+    #construct list of free spaces and spaces with penguins
+    if world[n][0] == anml.EMPTY and n!= (x,y):
+      free_loc.append(n)
+    if world[n][0] == anml.PENGUIN:
+      peng_loc.append(n)
+  if len(peng_loc) > 0:
+    return peng_loc
+  else:
+    return free_loc
+
+
+def generate_plot(population):
+  bear_x = []
+  bear_y = []
+  peng_x = []
+  peng_y = []
+  for point in population:
+    if world[point]['species'] == anml.BEAR:
+      bear_x.append(point[0])
+      bear_y.append(point[1])
+    else:
+      peng_x.append(point[0])
+      peng_y.append(point[1])
+
+  return peng_x, peng_y, bear_x, bear_y
+
+
+
+
+
 
 
 
