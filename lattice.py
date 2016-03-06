@@ -49,10 +49,13 @@ def main():
   world_init(num_peng, num_bear, dim)
   
   plt.ion()
+  plt.axis('off')
   fig = plt.figure()
   ax = fig.add_subplot(111)
   ax.set_xlim(0,dim)
   ax.set_ylim(0,dim)
+  ax.get_xaxis().set_visible(False)
+  ax.get_yaxis().set_visible(False)
   peng_x, peng_y, bear_x, bear_y = generate_plot(population)
   scat1 = ax.scatter(peng_x, peng_y, color = 'green')
   scat2 = ax.scatter(bear_x, bear_y, color = 'red')
@@ -73,6 +76,8 @@ def main():
    # peng = [(x,y) for x,y in zip(peng_x, peng_y)]
    # bear = [(x,y) for x,y in zip(bear_x, bear_y)]
     ax.clear()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
     scat1 = ax.scatter(peng_x, peng_y, color = 'green')
     scat2 = ax.scatter(bear_x, bear_y, color = 'red')
     fig.canvas.draw()
