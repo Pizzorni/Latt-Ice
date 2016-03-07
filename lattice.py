@@ -48,7 +48,7 @@ def main():
   world = np.zeros([dim,dim], dtype=animal_dt) 
   world_init(num_peng, num_bear, dim)
   
-  strout = "F:" + str(gen + 1) + " D:" + str(dim) + "\n"
+  strout = str(gen + 1) + ":" + str(dim) + "\n"
   f.write(strout)
   f.write("x\n")
   frame = write_frame()
