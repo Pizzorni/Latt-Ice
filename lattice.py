@@ -37,6 +37,8 @@ def main():
   if(args.gen):
     gen = args.gen
 
+  f = open('test.out', 'wr')
+
   # Custom dtype for usage with np arrays
   # (species, age, energy, speed)
   # Species: Empty -> 0, Penguin -> 1, Bear ->2
@@ -46,9 +48,13 @@ def main():
   world = np.zeros([dim,dim], dtype=animal_dt) 
   world_init(num_peng, num_bear, dim)
   
-  peng_x, peng_y, bear_x, bear_y = generate_plot(population)
-
+  strout = "F:" + str(gen + 1) + " D:" + str(dim) + "\n"
+  f.write(strout)
+  f.write("x\n")
+  frame = write_frame()
+  f.write(frame)
   for g in range(gen):
+    f.write("x\n")
     np.random.shuffle(population)
     while(len(population) > 0):
       animal = population.pop()
@@ -61,6 +67,8 @@ def main():
       if(world[beasty]['species'] != anml.EMPTY):
         population.append(beasty)
     new_pop = []
+    f.write(write_frame())
+  f.close()
 
 
 def world_init(num_peng, num_bear, dim):
@@ -195,8 +203,14 @@ def generate_plot(population):
 
   return peng_x, peng_y, bear_x, bear_y
 
-
-
+def write_frame():
+  frame = ""
+  dim = world.shape[0]
+  for row in xrange(dim):
+    for col in xrange(dim):
+      frame += str(world[row][col][0])
+    frame += "\n"
+  return frame
 
 
 
