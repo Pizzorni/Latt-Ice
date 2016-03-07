@@ -50,11 +50,9 @@ def main():
   
   strout = str(gen + 1) + ":" + str(dim) + "\n"
   f.write(strout)
-  f.write("x\n")
   frame = write_frame()
   f.write(frame)
   for g in range(gen):
-    f.write("x\n")
     np.random.shuffle(population)
     while(len(population) > 0):
       animal = population.pop()
