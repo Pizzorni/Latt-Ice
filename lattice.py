@@ -48,8 +48,6 @@ def main():
   
   peng_x, peng_y, bear_x, bear_y = generate_plot(population)
 
-  print "Initial number of penguins: " + str(num_peng)
-  print "Initial number of bears: " + str(num_bear)
   for g in range(gen):
     np.random.shuffle(population)
     while(len(population) > 0):
@@ -63,25 +61,6 @@ def main():
       if(world[beasty]['species'] != anml.EMPTY):
         population.append(beasty)
     new_pop = []
-    peng_x, peng_y, bear_x, bear_y = generate_plot(population)
-
-
-    
-
-  finbear = 0
-  finpeng = 0
-  unaccounted = 0
-  for beast in population:
-    if(world[beast]['species'] == anml.PENGUIN):
-      finpeng += 1
-    elif(world[beast]['species'] == anml.BEAR):
-      finbear += 1
-    else:
-      print "unaccounted beasty: " + str(world[beast])
-      unaccounted += 1
-  print "Final number of penguins: " + str(finpeng)
-  print "Final number of bears: " + str(finbear)
-  print "Unaccounted for cells: " + str(unaccounted)
 
 
 def world_init(num_peng, num_bear, dim):
@@ -119,7 +98,6 @@ def simulate_penguin(penguin_coords):
   eaten = penguin['eaten']
   if(eaten == 1):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
-    print "penguin eaten"
 
   elif(len(free_cells) > 0): #change to len
     move_to = free_cells[np.random.randint(len(free_cells))]
@@ -129,7 +107,6 @@ def simulate_penguin(penguin_coords):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
 
     if(reproduce == sim.P_AGE):
-      print "baby penguin"
       baby_peng = (anml.PENGUIN, 1, sim.P_ENERGY, sim.P_SPEED, 0)
       #add baby penguin to population yet to be simulated
       new_pop.append((x,y))
@@ -155,11 +132,9 @@ def simulate_bear(bear_coords):
 
   if(survive == 0):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
-    print "bear dead"
   elif(len(free_cells) > 0):
     move_to = free_cells[np.random.randint(len(free_cells))]
     if(world[move_to]['species'] == anml.PENGUIN):
-      print "BEAR HUNGRY"
       world[move_to]['eaten'] = 1
       bear['energy'] += 5
     world[move_to] = bear
@@ -169,7 +144,6 @@ def simulate_bear(bear_coords):
       baby_bear = (anml.BEAR, 1, sim.B_ENERGY, sim.B_SPEED, 0)
       new_pop.append((x,y))
       world[x][y] = baby_bear
-      print "baby bear"
   else:
     new_pop.append((x,y))
     world[x][y] = bear
