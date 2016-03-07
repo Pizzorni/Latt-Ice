@@ -22,8 +22,13 @@ def update(frame_number):
         bears.append((r,c))
   peng_scat.set_offsets(penguins)
   bear_scat.set_offsets(bears)
-  label = "Generation: " + str(frame_number)
-  plt.suptitle(label)
+  label = "Gen: " + str(frame_number) + "\n"
+  pengpop = "Peng: " + str(len(penguins)) + ", "
+  bearpop = "Bear: " + str(len(bears))
+  ax = plt.gca()
+  plt.title(label + pengpop + bearpop, size = 12)
+  ttl = ax.title
+  ttl.set_position([.5, 1.01])
 
 def run_visualizer(infile):
   global chunked_frames, dim, gen
