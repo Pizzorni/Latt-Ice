@@ -26,10 +26,10 @@ def main():
                     help='number of generations')
   args = parser.parse_args()
   #Default simulation parameters
-  num_peng = 20
-  num_bear = 10
-  dim = 100
-  gen = 1000
+  num_peng = 5
+  num_bear = 5
+  dim = 5
+  gen = 100
   if(args.peng):
     num_peng = args.peng
   if(args.bear):
@@ -50,16 +50,16 @@ def main():
   
   #plt.ion()
   #plt.axis('off')
-  #fig = plt.figure()
-  #ax = fig.add_subplot(111)
-  #ax.set_xlim(0,dim)
-  #ax.set_ylim(0,dim)
-  #ax.get_xaxis().set_visible(False)
-  #ax.get_yaxis().set_visible(False)
+  fig = plt.figure()
+  ax = fig.add_subplot(111)
+  ax.set_xlim(0,dim)
+  ax.set_ylim(0,dim)
+  ax.get_xaxis().set_visible(False)
+  ax.get_yaxis().set_visible(False)
   peng_x, peng_y, bear_x, bear_y = generate_plot(population)
-  #scat1 = ax.scatter(peng_x, peng_y, color = 'green')
-  #scat2 = ax.scatter(bear_x, bear_y, color = 'red')
-  #fig.canvas.draw()
+  scat1 = ax.scatter(peng_x, peng_y, color = 'green')
+  scat2 = ax.scatter(bear_x, bear_y, color = 'red')
+  fig.canvas.draw()
   print "Initial number of penguins: " + str(num_peng)
   print "Initial number of bears: " + str(num_bear)
   for g in range(gen):
@@ -72,15 +72,16 @@ def main():
         simulate_bear(animal)
     new_pop = list(set(new_pop))
     for beasty in new_pop:
-      population.append(beasty)
+      if(world[beasty]['species'] != anml.EMPTY):
+        population.append(beasty)
     new_pop = []
     peng_x, peng_y, bear_x, bear_y = generate_plot(population)
-    #ax.clear()
-    #ax.get_xaxis().set_visible(False)
-    #ax.get_yaxis().set_visible(False)
-    #scat1 = ax.scatter(peng_x, peng_y, color = 'green')
-    #scat2 = ax.scatter(bear_x, bear_y, color = 'red')
-    #fig.canvas.draw()
+    ax.clear()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    scat1 = ax.scatter(peng_x, peng_y, color = 'green')
+    scat2 = ax.scatter(bear_x, bear_y, color = 'red')
+    fig.canvas.draw()
   finbear = 0
   finpeng = 0
   unaccounted = 0
@@ -90,6 +91,7 @@ def main():
     elif(world[beast]['species'] == anml.BEAR):
       finbear += 1
     else:
+      print "unaccounted beasty: " + str(world[beast])
       unaccounted += 1
   print "Final number of penguins: " + str(finpeng)
   print "Final number of bears: " + str(finbear)
@@ -131,8 +133,9 @@ def simulate_penguin(penguin_coords):
   eaten = penguin['eaten']
   if(eaten == 1):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
+    print "penguin eaten"
 
-  elif(free_cells):
+  elif(len(free_cells) > 0): #change to len
     move_to = free_cells[np.random.randint(len(free_cells))]
     #move and add penguin to simulated population
     new_pop.append(move_to)
@@ -140,6 +143,7 @@ def simulate_penguin(penguin_coords):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
 
     if(reproduce == sim.P_AGE):
+      print "baby penguin"
       baby_peng = (anml.PENGUIN, 1, sim.P_ENERGY, sim.P_SPEED, 0)
       #add baby penguin to population yet to be simulated
       new_pop.append((x,y))
@@ -166,14 +170,15 @@ def simulate_bear(bear_coords):
   if(survive == 0):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
     print "bear dead"
-  elif(free_cells):
+  elif(len(free_cells) > 0):
     move_to = free_cells[np.random.randint(len(free_cells))]
-    world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
     if(world[move_to]['species'] == anml.PENGUIN):
+      print "BEAR HUNGRY"
       world[move_to]['eaten'] = 1
       bear['energy'] += 5
     world[move_to] = bear
     new_pop.append(move_to)
+    world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
     if(reproduce == sim.B_AGE):
       baby_bear = (anml.BEAR, 1, sim.B_ENERGY, sim.B_SPEED, 0)
       new_pop.append((x,y))
