@@ -17,7 +17,6 @@ def run_simulation(num_peng, num_bear, dim, gen, outfile):
   global world
   global population
   global new_pop
-
   f = open(outfile, 'wr')
 
   # Custom dtype for usage with np arrays
@@ -34,6 +33,8 @@ def run_simulation(num_peng, num_bear, dim, gen, outfile):
   frame = write_frame()
   f.write(frame)
   for g in range(gen):
+    pengpop = 0
+    bearpop = 0
     print "GENERATION: " + str(g)
     np.random.shuffle(population)
     while(len(population) > 0):
@@ -46,8 +47,19 @@ def run_simulation(num_peng, num_bear, dim, gen, outfile):
     for beasty in new_pop:
       if(world[beasty]['species'] != anml.EMPTY):
         population.append(beasty)
+      if(world[beasty]['species'] == anml.BEAR):
+        bearpop += 1
+      if(world[beasty]['species'] == anml.PENGUIN):
+        pengpop += 1
     new_pop = []
     f.write(write_frame())
+    print "Penguins: " + str(pengpop) + " Bears: " + str(bearpop)
+    if(pengpop == 0):
+      print "Simulation aborted: Penguins extinct"
+      break
+    if(bearpop == 0):
+      print "Simulation aborted: Bears extinct"
+      break
   f.close()
 
 
@@ -118,7 +130,7 @@ def simulate_bear(bear_coords):
   bear['age'] = bear['age'] % B_AGE
   survive = bear['energy']
 
-  if(survive == 0):
+  if(survive <= 0):
     world[x][y] = (anml.EMPTY, 0, 0, 0, 0)
   elif(len(free_cells) > 0):
     move_to = free_cells[np.random.randint(len(free_cells))]

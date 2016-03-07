@@ -29,6 +29,7 @@ def update(frame_number):
   plt.title(label + pengpop + bearpop, size = 12)
   ttl = ax.title
   ttl.set_position([.5, 1.01])
+  ax.set_axis_bgcolor((0,0,0))
 
 def run_visualizer(infile):
   global chunked_frames, dim, gen
@@ -55,7 +56,7 @@ def run_visualizer(infile):
   ax = fig.add_subplot(111)
   ax.set_xlim(0,dim), ax.set_xticks([])
   ax.set_ylim(0,dim), ax.set_yticks([])
-  peng_scat = ax.scatter(None, None, color = 'green')
+  peng_scat = ax.scatter(None, None, color = 'blue')
   bear_scat = ax.scatter(None, None, color = 'red')
 
   animation = FuncAnimation(fig, update, frames = gen, 
