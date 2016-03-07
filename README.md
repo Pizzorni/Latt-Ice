@@ -45,4 +45,3 @@ If no filename, reads from "lattice.frames"
   * evolutionary 
   * MCTS
  * build tool for batch simulation for different algorithm combinations 
- * 
