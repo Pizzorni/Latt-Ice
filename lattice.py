@@ -2,8 +2,6 @@ import argparse
 from animals import Animal as anml
 from simulation import Simulation as sim
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 
 world = []
@@ -48,20 +46,7 @@ def main():
   world = np.zeros([dim,dim], dtype=animal_dt) 
   world_init(num_peng, num_bear, dim)
   
-  plt.ion()
-  plt.axis('off')
-  fig = plt.figure()
- # ax = fig.add_subplot(111)
- # ax.set_xlim(0,dim)
- # ax.set_ylim(0,dim)
- # ax.get_xaxis().set_visible(False)
- # ax.get_yaxis().set_visible(False)
   peng_x, peng_y, bear_x, bear_y = generate_plot(population)
- # scat1 = ax.scatter(peng_x, peng_y, color = 'green')
- # scat2 = ax.scatter(bear_x, bear_y, color = 'red')
- # fig.canvas.draw()
-  plt.scatter(peng_x, peng_y)
-  plt.show()
 
   print "Initial number of penguins: " + str(num_peng)
   print "Initial number of bears: " + str(num_bear)
@@ -80,18 +65,7 @@ def main():
     new_pop = []
     peng_x, peng_y, bear_x, bear_y = generate_plot(population)
 
-    #ax.clear()
-    #ax.get_xaxis().set_visible(False)
-    #ax.get_yaxis().set_visible(False)
-    #scat1 = ax.scatter(peng_x, peng_y, color = 'green')
-    #scat2 = ax.scatter(bear_x, bear_y, color = 'red')
-    #fig.canvas.draw()
-    plt.scatter(peng_x,peng_y)
-    plt.draw()
 
-  peng_x, peng_y, bear_x, bear_y = generate_plot(population)
-  plt.scatter(peng_x,peng_y)
-  plt.draw()
     
 
   finbear = 0
