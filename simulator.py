@@ -113,7 +113,7 @@ def simulate_bear(bear_coords):
   free_cells = hunt_penguins(x,y)
   bear = world[x][y]
   bear['age'] += 1
-  bear['energy'] -= 1
+  bear['energy'] -= 2
   reproduce = bear['age']
   bear['age'] = bear['age'] % B_AGE
   survive = bear['energy']
