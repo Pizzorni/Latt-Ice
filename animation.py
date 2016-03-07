@@ -1,9 +1,15 @@
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
+import sys
 
+if(len(sys.argv) > 1):
+  infile = sys.argv[1]
+  print infile
+else:
+  infile = "lattice.frames"
 
-f = open('test.out')
+f = open(infile, 'r')
 frames = f.read().split('\n')
 f.close()
 
