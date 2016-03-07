@@ -38,4 +38,11 @@ If no filename, reads from "lattice.frames"
   * matplotlib
   * numpy
 
-
+### TODO
+ * organize code 
+ * profile performance
+ * add multiple algorithms for bear/penguin movement
+  * evolutionary 
+  * MCTS
+ * build tool for batch simulation for different algorithm combinations 
+ * 
