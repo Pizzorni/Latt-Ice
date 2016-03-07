@@ -22,12 +22,15 @@ def main():
                     help='dimension of square world')
   parser.add_argument('-g', '--gen', type=int,
                     help='number of generations')
+  parser.add_argument('-o', '--out', type=str,
+                    help='frame output file')
   args = parser.parse_args()
   #Default simulation parameters
   num_peng = 5
   num_bear = 5
   dim = 5
   gen = 100
+  outfile = "lattice.frames"
   if(args.peng):
     num_peng = args.peng
   if(args.bear):
@@ -36,8 +39,10 @@ def main():
     dim = args.dim
   if(args.gen):
     gen = args.gen
+  if(args.out):
+    outfile = args.out
 
-  f = open('test.out', 'wr')
+  f = open(outfile, 'wr')
 
   # Custom dtype for usage with np arrays
   # (species, age, energy, speed)
@@ -53,6 +58,7 @@ def main():
   frame = write_frame()
   f.write(frame)
   for g in range(gen):
+    print "GENERATION: " + str(g)
     np.random.shuffle(population)
     while(len(population) > 0):
       animal = population.pop()
