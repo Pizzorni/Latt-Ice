@@ -36,8 +36,6 @@ def run_visualizer(infile):
   global peng_scat, bear_scat
   
 
-  infile = "lattice.frames"
-
   f = open(infile, 'r')
   frames = f.read().split('\n')
   f.close()
